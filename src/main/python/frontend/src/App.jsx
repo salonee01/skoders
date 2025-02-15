@@ -21,6 +21,7 @@ export default function App() {
           <Navbar />
           <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/text-gen" element={<TextGenComponent />} />
 
               {/* Redirect logged-in users away from login/register */}
               <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />

@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from models.text_generator import generate_text
+from api.calculate_data_uniqueness import calculate_uniqueness_score
+from api.analyze_market_data import analyze_market_demand
 from fastapi import FastAPI, Depends, HTTPException
 from pymongo import MongoClient
 from pydantic import BaseModel
@@ -14,7 +16,7 @@ SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
 
 # MongoDB Setup
-client = MongoClient("mongodb://localhost:27017")
+client = MongoClient("mongodb+srv://saloneevelonde:FczHrpkg8u6qOeMv@cluster0.z6ubj.mongodb.net/")
 db = client["invest_nexus"]
 users_collection = db["users"]
 
@@ -49,7 +51,6 @@ async def generate_text_api(prompt: dict):
 @router.post("/login/")
 async def login(user: User):
     db_user = users_collection.find_one({"username": user.username})
-
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
@@ -70,6 +71,15 @@ async def signup(user: SignupRequest):
     users_collection.insert_one({"username": user.username, "password": hashed_password, "role": user.role})
 
     return {"message": "User registered successfully", "role": user.role}
+
+@router.post("/data-unique")
+async def generate_text_api(prompt: dict):
+    return {"generated_score": calculate_uniqueness_score(prompt['prompt'])}
+
+@router.post("/market-score")
+async def generate_market_score(prompt: dict):
+    return {"generated_score": analyze_market_demand(prompt['prompt'])}
+
 
 founders_collection = db["founders"]
 
