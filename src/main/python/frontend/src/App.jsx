@@ -1,12 +1,14 @@
-import TextGenComponent from "./components/TextGenComponent"; // ✅ Adjust path if needed
+import React from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
+import TextGenComponent from "./components/TextGenComponent";
 
 function App() {
-  return (
-    <div>
-      <h1>Hello, Vite + React! 🚀</h1>
-      <TextGenComponent />  {/* Make sure this component is placed inside App */}
-    </div>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <TextGenComponent />
+        </ThemeProvider>
+    );
 }
 
 export default App;
