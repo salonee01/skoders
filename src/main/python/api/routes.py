@@ -10,6 +10,17 @@ from passlib.context import CryptContext
 import jwt
 import datetime
 
+SECRET_KEY = "mysecretkey"
+ALGORITHM = "HS256"
+
+# MongoDB Setup
+client = MongoClient("mongodb://localhost:27017")
+db = client["invest_nexus"]
+users_collection = db["users"]
+
+# Password Hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 router = APIRouter()
 
 class User(BaseModel):
@@ -34,10 +45,10 @@ def create_access_token(data: dict):
 async def generate_text_api(prompt: dict):
     return {"generated_text": generate_text(prompt['prompt'])}
 
+
 @router.post("/login/")
 async def login(user: User):
     db_user = users_collection.find_one({"username": user.username})
-
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
