@@ -1,14 +1,16 @@
-import React from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
 import TextGenComponent from "./components/TextGenComponent";
 
-function App() {
+export default function App() {
     return (
-        <ThemeProvider theme={theme}>
-            <TextGenComponent />
-        </ThemeProvider>
+        <Router>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/text-gen" element={<TextGenComponent />} />
+            </Routes>
+        </Router>
     );
 }
-
-export default App;
