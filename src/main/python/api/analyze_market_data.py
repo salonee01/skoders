@@ -64,11 +64,10 @@ def analyze_market_demand(topic):
     if total > 0:
         pos_percentage = (pos_count / total) * 100
         neg_percentage = (neg_count / total) * 100
-        print(f"\n📊 **Overall Sentiment Analysis**")
-        print(f"✅ Positive Sentiment: {pos_percentage:.2f}%")
-        print(f"❌ Negative Sentiment: {neg_percentage:.2f}%")
+        return pos_percentage,neg_percentage
     else:
         print("\n⚠️ Not enough comments for sentiment analysis.")
+        return 0,0
 
 
 # 🔹 Example Usage

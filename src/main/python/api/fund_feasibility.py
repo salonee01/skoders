@@ -7,9 +7,12 @@ print("Logging in")
 login("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")
 # Load Hugging Face model for text generation
 generator = pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.3")
-
+print("Logged in")
 # Load SpaCy NLP model for Named Entity Recognition (NER)
 nlp = spacy.load("en_core_web_sm")
+print("Spacy loaded")
+startup_idea = input("Enter your startup idea: ")
+available_funds = float(input("Enter your available funding amount (in USD): "))
 
 def estimate_required_funding(idea_text):
     """Use Hugging Face model to estimate startup funding"""
@@ -44,14 +47,12 @@ def check_startup_feasibility(idea_text, available_funding):
     
     # Step 3: Compare with available funds
     if available_funding >= required_funding:
-        return f"✅ Feasible! You have ${available_funding}, which meets the estimated requirement of ${required_funding}."
+        return "Proper Funds",available_funding
     else:
-        additional_needed = required_funding - available_funding
-        return f"❌ Not Feasible. You have ${available_funding}, but the estimated requirement is ${required_funding}. You need an additional ${additional_needed} to proceed."
+        #additional_needed = required_funding - available_funding
+        return "Less Funds",required_funding
 
-# 🔹 Example Usage
-startup_idea = input("Enter your startup idea: ")
-available_funds = float(input("Enter your available funding amount (in USD): "))
 
-feasibility_result = check_startup_feasibility(startup_idea, available_funds)
-print("\n🚀 Feasibility Analysis:", feasibility_result)
+fund_result,fund_amount = check_startup_feasibility(startup_idea, available_funds)
+print("\n🚀 Feasibility Analysis 1:", fund_result)
+print("\n🚀 Feasibility Analysis 2:", fund_amount)
