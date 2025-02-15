@@ -9,6 +9,8 @@ from bson import ObjectId
 from passlib.context import CryptContext
 import jwt
 import datetime
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
 SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
@@ -77,3 +79,91 @@ async def generate_text_api(prompt: dict):
 @router.post("/market-score")
 async def generate_market_score(prompt: dict):
     return {"generated_score": analyze_market_demand(prompt['prompt'])}
+
+
+founders_collection = db["founders"]
+
+class FounderInput(BaseModel):
+    name: str
+    age: int
+    location: str
+    industry: str
+    startupStage: str
+    fundingStatus: str
+    skills: list[str]
+    cofounderSkills: list[str]
+    collaborationStyle: str
+    availability: str
+    locationPref: str
+
+@router.post("/add-or-update-founder/")
+async def add_or_update_founder(founder: FounderInput):
+    existing_founder = founders_collection.find_one({"name": founder.name})
+    if existing_founder:
+        # Update the existing founder
+        founders_collection.update_one({"name": founder.name}, {"$set": founder.dict()})
+        return {"message": "Founder updated successfully"}
+    else:
+        # Add new founder
+        founders_collection.insert_one(founder.dict())
+        return {"message": "Founder added successfully"}
+
+# Function to get all founders from the database
+def get_founders(name: str):
+    founders = list(founders_collection.find({"name": {"$ne": name}}))
+    return founders
+
+# Convert text-based data into numeric vectors for matching (can be enhanced based on actual use case)
+def vectorize(founder):
+    return np.array([
+        founder.get('age', 0),  # Age
+        len(founder.get('location', '')),  # Location length
+        len(founder.get('industry', '')),  # Industry length
+        len(founder.get('startupStage', '')),  # Startup stage length
+        len(founder.get('fundingStatus', '')),  # Funding status length
+        len(founder.get('skills', [])),  # Skills count
+        len(founder.get('cofounderSkills', [])),  # Cofounder skills count
+        len(founder.get('collaborationStyle', '')),  # Work style length
+        len(founder.get('availability', '')),  # Commitment length
+        len(founder.get('locationPref', ''))   # Location preference length
+    ]).reshape(1, -1)
+
+@router.post("/match-cofounder/")
+async def match_cofounder(founder: dict):
+    founders = get_founders(founder['name'])
+
+    input_founder = founders_collection.find_one({"name": founder['name']})
+    
+    if not founders:
+        raise HTTPException(status_code=404, detail="No founders available for matching")
+
+    # Convert founders into feature vectors
+    founders_vectors = np.array([vectorize(f) for f in founders]).reshape(len(founders), -1)
+
+    input_vector = vectorize(input_founder)
+
+    # Calculate cosine similarity between the input founder and all others
+    similarities = cosine_similarity(input_vector, founders_vectors)[0]
+    
+    # Find the top 3 matches
+    top_match_indices = similarities.argsort()[-3:][::-1]
+    top_matches = [founders[i] for i in top_match_indices]
+
+    return {
+        "matches": [
+            {
+                "name": match['name'],
+                "match_score": round(similarities[i] * 100, 2)
+            }
+            for i, match in zip(top_match_indices, top_matches)
+        ]
+    }
+    
+    
+
+@router.get("/get-founder/{name}")
+async def get_founder(name: str):
+    founder = founders_collection.find_one({"name": name})
+    if not founder:
+        raise HTTPException(status_code=404, detail="Founder not found")
+    return {key: value for key, value in founder.items() if key != "_id"}

@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/NavBar";
 import Home from "./components/Home";
-import TextGenComponent from "./components/TextGenComponent";
 import Login from "./components/Login";
+import TextGenComponent from "./components/TextGenComponent";
 import Signup from "./components/Signup";
 import { AuthContext } from "./components/AuthContext";
 import FounderDashboard from "./components/FounderDashboard";
+import FounderForm from "./components/founderDashboard/CoFounderMatching";
 
 export default function App() {
   const { user } = useContext(AuthContext);
@@ -31,6 +32,10 @@ export default function App() {
               <Route 
                   path="/founder-dashboard" 
                   element={user?.role === "founder" ? <FounderDashboard /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                  path="/cofounder-matching" 
+                  element={user?.role === "founder" ? <FounderForm /> : <Navigate to="/login" />} 
               />
               <Route 
                   path="/investor-dashboard" 

@@ -27,7 +27,7 @@ const Login = () => {
             const access_token = response.data.access_token;
             const role = response.data.role;
             // localStorage.setItem("user", JSON.stringify(response.data)); // Store user data in local storage
-            login(access_token, role); // Update AuthContext
+            login(access_token, role, username); // Update AuthContext
     
             // Redirect based on role
             setTimeout(() => {
