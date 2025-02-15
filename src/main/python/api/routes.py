@@ -2,12 +2,62 @@ from fastapi import APIRouter
 from models.text_generator import generate_text
 from api.calculate_data_uniqueness import calculate_uniqueness_score
 from api.analyze_market_data import analyze_market_demand
+from fastapi import FastAPI, Depends, HTTPException
+from pymongo import MongoClient
+from pydantic import BaseModel
+from bson import ObjectId
+from passlib.context import CryptContext
+import jwt
+import datetime
 
 router = APIRouter()
+
+class User(BaseModel):
+    username: str
+    password: str
+
+class SignupRequest(BaseModel):
+    username: str
+    password: str
+    role: str 
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @router.post("/generate-text")
 async def generate_text_api(prompt: dict):
     return {"generated_text": generate_text(prompt['prompt'])}
+
+@router.post("/login/")
+async def login(user: User):
+    db_user = users_collection.find_one({"username": user.username})
+
+    if not db_user or not verify_password(user.password, db_user["password"]):
+        raise HTTPException(status_code=400, detail="Invalid username or password")
+    
+    token = create_access_token({"sub": user.username})
+    role = db_user.get("role", "user")  # Default role is 'user' if not set
+    
+    return {"access_token": token, "token_type": "bearer", "role": role}
+
+@router.post("/signup/")
+async def signup(user: SignupRequest):
+    if users_collection.find_one({"username": user.username}):
+        raise HTTPException(status_code=400, detail="Username already exists")
+
+    if user.role not in ["founder", "investor"]:
+        raise HTTPException(status_code=400, detail="Invalid role selected")
+
+    hashed_password = pwd_context.hash(user.password)
+    users_collection.insert_one({"username": user.username, "password": hashed_password, "role": user.role})
+
+    return {"message": "User registered successfully", "role": user.role}
 
 @router.post("/data-unique")
 async def generate_text_api(prompt: dict):
