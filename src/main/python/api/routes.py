@@ -25,6 +25,11 @@ class User(BaseModel):
     username: str
     password: str
 
+class SignupRequest(BaseModel):
+    username: str
+    password: str
+    role: str 
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -42,17 +47,24 @@ async def generate_text_api(prompt: dict):
 @router.post("/login/")
 async def login(user: User):
     db_user = users_collection.find_one({"username": user.username})
+
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
     token = create_access_token({"sub": user.username})
-    return {"access_token": token, "token_type": "bearer"}
+    role = db_user.get("role", "user")  # Default role is 'user' if not set
+    
+    return {"access_token": token, "token_type": "bearer", "role": role}
 
 @router.post("/signup/")
-async def signup(user: User):
+async def signup(user: SignupRequest):
     if users_collection.find_one({"username": user.username}):
         raise HTTPException(status_code=400, detail="Username already exists")
-    
+
+    if user.role not in ["founder", "investor"]:
+        raise HTTPException(status_code=400, detail="Invalid role selected")
+
     hashed_password = pwd_context.hash(user.password)
-    users_collection.insert_one({"username": user.username, "password": hashed_password})
-    return {"message": "User created successfully"}
+    users_collection.insert_one({"username": user.username, "password": hashed_password, "role": user.role})
+
+    return {"message": "User registered successfully", "role": user.role}
