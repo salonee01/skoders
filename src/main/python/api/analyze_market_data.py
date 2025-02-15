@@ -1,7 +1,6 @@
 import praw
 from transformers import pipeline
 
-# print("Start")
 # 🔹 Reddit API Credentials
 reddit = praw.Reddit(
     client_id="3X1F8aFlUfguxneIdadSHA",
@@ -10,13 +9,6 @@ reddit = praw.Reddit(
     username="NextStage2655",
     password="investnexus@123"
 )
-# print("Mid")
-# subreddit = reddit.subreddit("startups")
-# for post in subreddit.hot(limit=5):
-#     print(post.title)
-
-# print("End")
-
 
 # 🔹 Load Sentiment Analysis Model
 sentiment_analyzer = pipeline("sentiment-analysis")
@@ -41,12 +33,12 @@ def analyze_market_demand(topic):
     results = get_reddit_comments(topic)
     if not results:
         print("❌ No discussions found. Try a different topic.")
-        return
+        return 0,0
     
     market_sentiments = []
     
     for post in results:
-        print(f"\n🔸 **{post['title']}** ({post['url']})")
+        # print(f"\n🔸 **{post['title']}** ({post['url']})")
         
         sentiments = []
         for comment in post["comments"]:
@@ -70,6 +62,6 @@ def analyze_market_demand(topic):
         return 0,0
 
 
-# 🔹 Example Usage
-startup_idea = input("Enter your startup idea: ")
-analyze_market_demand(startup_idea)
+# # 🔹 Example Usage
+# startup_idea = input("Enter your startup idea: ")
+# analyze_market_demand(startup_idea)

@@ -49,7 +49,7 @@ def calculate_uniqueness_score(startup_idea):
     competitors = get_competitors(startup_idea)
 
     if not competitors:
-        retrun 100
+        return 100
     else:
         print("\nCompetitors Found:")
         for comp in competitors:
