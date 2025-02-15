@@ -11,6 +11,7 @@ export default function Navbar() {
                 <Box>
                     <Button color="inherit" component={Link} to="/">Home</Button>
                     <Button color="inherit" component={Link} to="/text-gen">Text Generator</Button>
+                    <Button color="inherit" component={Link} to="/login">Login/Signup</Button>
                 </Box>
             </Toolbar>
         </AppBar>
