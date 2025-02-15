@@ -8,6 +8,7 @@ import Signup from "./components/Signup";
 import { AuthContext } from "./components/AuthContext";
 import FounderDashboard from "./components/FounderDashboard";
 import FounderForm from "./components/founderDashboard/CoFounderMatching";
+import IdeaValidation from "./components/founderDashboard/IdeaValidation";
 
 export default function App() {
   const { user } = useContext(AuthContext);
@@ -36,6 +37,10 @@ export default function App() {
               <Route 
                   path="/cofounder-matching" 
                   element={user?.role === "founder" ? <FounderForm /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                  path="/idea-validation" 
+                  element={user?.role === "founder" ? <IdeaValidation /> : <Navigate to="/login" />} 
               />
               <Route 
                   path="/investor-dashboard" 
