@@ -11,6 +11,7 @@ import jwt
 import datetime
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from models.pitch_generator import generate_pitch
 
 SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
@@ -167,3 +168,14 @@ async def get_founder(name: str):
     if not founder:
         raise HTTPException(status_code=404, detail="Founder not found")
     return {key: value for key, value in founder.items() if key != "_id"}
+
+class PitchRequest(BaseModel):
+    prompt: str
+
+@router.post("/generate-pitch")
+async def generate_pitch_api(request: PitchRequest):
+    try:
+        pitch = generate_pitch(request.prompt)
+        return {"pitch": pitch}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
