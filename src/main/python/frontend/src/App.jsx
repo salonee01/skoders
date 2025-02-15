@@ -3,6 +3,7 @@ import { useContext } from "react";
 import Navbar from "./components/NavBar";
 import Home from "./components/Home";
 import Login from "./components/Login";
+import TextGenComponent from "./components/TextGenComponent";
 import Signup from "./components/Signup";
 import { AuthContext } from "./components/AuthContext";
 import FounderDashboard from "./components/FounderDashboard";
