@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { Container, TextField, Button, Typography, Box, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthContext"; // Import AuthContext
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -9,18 +10,34 @@ const Login = () => {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext); // Get login function
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://127.0.0.1:8000/login/", { username, password });
+            const response = await axios.post("http://127.0.0.1:8000/login/", 
+                { username, password }, 
+                { headers: { "Cache-Control": "no-cache", "Pragma": "no-cache" } } // Disable caching
+            );
+    
             setSuccess("Login successful!");
             setError("");
-            setTimeout(() => navigate("/dashboard"), 1000); // Redirect after success
+            console.log(response.data)
+            
+            const access_token = response.data.access_token;
+            const role = response.data.role;
+            // localStorage.setItem("user", JSON.stringify(response.data)); // Store user data in local storage
+            login(access_token, role); // Update AuthContext
+    
+            // Redirect based on role
+            setTimeout(() => {
+                navigate(role === "founder" ? "/founder-dashboard" : "/investor-dashboard");
+            }, 100);
+    
         } catch (err) {
-            if (err.response.status === 404) {
+            if (err.response?.status === 404) {
                 setError("User not found. Please sign up.");
-            } else if (err.response.status === 401) {
+            } else if (err.response?.status === 401) {
                 setError("Incorrect password.");
             } else {
                 setError("An error occurred. Try again.");
