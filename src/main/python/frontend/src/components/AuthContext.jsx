@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, use } from "react";
 
 export const AuthContext = createContext();
 
@@ -8,26 +8,29 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
+        const username = localStorage.getItem("username");
 
-        console.log("Retrieved from localStorage:", { token, role });
+        console.log("Retrieved from localStorage:", { token, role, use });
 
         if (token && role) {
-            setUser({ token, role });
+            setUser({ token, role, username });
             console.log("User set from localStorage:", { token, role });
         }
     }, []);
 
-    const login = (token, role) => {
-        console.log(token, role)
+    const login = (token, role, username) => {
+        console.log(token, role, username)
         localStorage.setItem("token", token);
         localStorage.setItem("role", token);
-        setUser({ token, role });
+        localStorage.setItem("username", username);
+        setUser({ token, role, username });
         console.log("User logged in:", { token, role });
     };
 
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
+        localStorage.removeItem("username");
         setUser(null);
         console.log("User logged out");
     };
