@@ -44,18 +44,21 @@ def calculate_uniqueness(idea, competitors):
     return uniqueness_score
 
 
-startup_idea = input("Enter your startup idea: ")
+def calculate_uniqueness_score(startup_idea):
+    print("\nFinding competitors...")
+    competitors = get_competitors(startup_idea)
 
-print("\nFinding competitors...")
-competitors = get_competitors(startup_idea)
+    if not competitors:
+        retrun 100
+    else:
+        print("\nCompetitors Found:")
+        for comp in competitors:
+            print(f"- {comp['title']} ({comp['url']})")
 
-if not competitors:
-    print("No competitors found. Your idea might be unique!")
-else:
-    print("\nCompetitors Found:")
-    for comp in competitors:
-        print(f"- {comp['title']} ({comp['url']})")
+        print("\nCalculating uniqueness score...")
+        uniqueness = calculate_uniqueness(startup_idea, competitors)
+        print(f"\n🚀 Uniqueness Score: {uniqueness:.2f}%")
+        return uniqueness
 
-    print("\nCalculating uniqueness score...")
-    uniqueness = calculate_uniqueness(startup_idea, competitors)
-    print(f"\n🚀 Uniqueness Score: {uniqueness:.2f}%")
+#startup_idea = input("Enter your startup idea: ")
+#print(calculate_uniqueness_score(startup_idea))
