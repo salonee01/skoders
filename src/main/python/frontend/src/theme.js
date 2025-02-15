@@ -3,10 +3,18 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#1976d2", // Custom primary color
+            main: "#A8DADC", // Pastel teal
         },
         secondary: {
-            main: "#ff4081", // Custom secondary color
+            main: "#FFB6B9", // Pastel pink
+        },
+        background: {
+            default: "#F1FAEE", // Light pastel background
+            paper: "#FFFFFF", // White background for paper components
+        },
+        text: {
+            primary: "#1D3557", // Dark blue text
+            secondary: "#457B9D", // Medium blue text
         },
     },
     typography: {

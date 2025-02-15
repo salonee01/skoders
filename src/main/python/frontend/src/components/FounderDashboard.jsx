@@ -46,6 +46,10 @@ const FounderDashboard = () => {
                         <ListItemIcon><BusinessIcon /></ListItemIcon>
                         {open && <ListItemText primary="Idea Validation" />}
                     </ListItem>
+                    <ListItem button component={Link} to="/pitch">
+                        <ListItemIcon><BusinessIcon /></ListItemIcon>
+                        {open && <ListItemText primary="Pitch Generation" />}
+                    </ListItem>
                     <ListItem button component={Link} to="/cofounder-matching">
                         <ListItemIcon><GroupIcon /></ListItemIcon>
                         {open && <ListItemText primary="Co-Founder Matching" />}
