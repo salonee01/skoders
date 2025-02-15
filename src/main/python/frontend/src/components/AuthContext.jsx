@@ -10,21 +10,21 @@ export const AuthProvider = ({ children }) => {
         const role = localStorage.getItem("role");
         const username = localStorage.getItem("username");
 
-        console.log("Retrieved from localStorage:", { token, role, use });
+        console.log("Retrieved from localStorage:", { token, role, username });
 
         if (token && role) {
             setUser({ token, role, username });
-            console.log("User set from localStorage:", { token, role });
+            console.log("User set from localStorage:", { token, role, username });
         }
     }, []);
 
     const login = (token, role, username) => {
         console.log(token, role, username)
         localStorage.setItem("token", token);
-        localStorage.setItem("role", token);
+        localStorage.setItem("role", role);
         localStorage.setItem("username", username);
         setUser({ token, role, username });
-        console.log("User logged in:", { token, role });
+        console.log("User logged in:", { token, role, username });
     };
 
     const logout = () => {
