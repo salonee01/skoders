@@ -4,16 +4,26 @@ import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 
 const FundFeasibility = () => {
-    const [prompt, setPrompt] = useState("");
-    const [funds, setFunds] = useState("");
-    const [result, setResult] = useState(null);
+    const [formData, setFormData] = useState({
+        businessModel: "",
+        targetMarket: "",
+        goals: "",
+        productDescription: "",
+        competitiveLandscape: "",
+        funds: ""
+    });
     const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(null);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleGenerateFeasibility = async () => {
         setLoading(true);
         try {
-            const response = await axios.post("http://localhost:8000/fund-feasibility", { prompt, funds });
-            setResult(response.data.generated_score.generated_score);
+            const response = await axios.post("http://localhost:8000/fund-feasibility", formData);
+            setResult(response.data);
         } catch (error) {
             console.error("Error generating feasibility:", error);
             setResult("Error generating feasibility. Please try again.");
@@ -29,22 +39,58 @@ const FundFeasibility = () => {
             <Card sx={{ p: 4, mt: 2, mb: 4, borderRadius: 2, backgroundColor: '#f5f5f5' }}>
                 <CardContent>
                     <TextField
-                        label="Enter your startup idea"
+                        label="Business Model"
                         variant="outlined"
                         fullWidth
-                        multiline
-                        rows={4}
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        sx={{ my: 2 }}
+                        name="businessModel"
+                        value={formData.businessModel}
+                        onChange={handleChange}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
-                        label="Enter available funds"
+                        label="Target Market"
                         variant="outlined"
                         fullWidth
-                        value={funds}
-                        onChange={(e) => setFunds(e.target.value)}
-                        sx={{ my: 2 }}
+                        name="targetMarket"
+                        value={formData.targetMarket}
+                        onChange={handleChange}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Goals"
+                        variant="outlined"
+                        fullWidth
+                        name="goals"
+                        value={formData.goals}
+                        onChange={handleChange}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Product/Service Description"
+                        variant="outlined"
+                        fullWidth
+                        name="productDescription"
+                        value={formData.productDescription}
+                        onChange={handleChange}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Competitive Landscape"
+                        variant="outlined"
+                        fullWidth
+                        name="competitiveLandscape"
+                        value={formData.competitiveLandscape}
+                        onChange={handleChange}
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Available Funding"
+                        variant="outlined"
+                        fullWidth
+                        name="funds"
+                        value={formData.funds}
+                        onChange={handleChange}
+                        sx={{ mb: 2 }}
                     />
                     <Button
                         variant="contained"
@@ -67,12 +113,12 @@ const FundFeasibility = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
                                     <Typography variant="body1" sx={{ fontSize: '1.2rem', color: '#333' }}>
-                                        <strong>Feasibility:</strong> {result[0]}
+                                        <strong>Feasibility:</strong> {result.generated_score[0]}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <Typography variant="body1" sx={{ fontSize: '1.2rem', color: '#333' }}>
-                                        <strong>Required Funds:</strong> ₹{result[1]}
+                                        <strong>Required Funds:</strong> ${result.generated_score[1]}
                                     </Typography>
                                 </Grid>
                             </Grid>

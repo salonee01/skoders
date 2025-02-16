@@ -14,13 +14,12 @@ client = InferenceClient(
 
 def estimate_required_funding(data):
     prompt = (
-        f"Estimate the amount of money needed (in USD) for a startup idea with the following details:\n"
+        f"Give the total amount of money in numbers not words needed for a startup with following details (don't give breakdwown and don't give a range):\n"
         f"Business Model: {data['businessModel']}\n"
         f"Target Market: {data['targetMarket']}\n"
         f"Goals: {data['goals']}\n"
         f"Product/Service Description: {data['productDescription']}\n"
         f"Competitive Landscape: {data['competitiveLandscape']}\n"
-        f"Revenue Streams: {data['revenueStreams']}\n"
     )
     
     logging.debug(f"Generated prompt: {prompt}")
@@ -38,10 +37,9 @@ def estimate_required_funding(data):
 def extract_funding_amount(text):
     """Extract numerical funding amount using SpaCy NER."""
     doc = nlp(text)
-    
     for ent in doc.ents:
         if ent.label_ == "MONEY":  # Look for monetary entities
-            amount = "".join(filter(str.isdigit, ent.text))  # Extract only numbers
+            amount = "".join(filter(str.isdigit, ent.text))
             return float(amount) if amount else None
 
     return None  # Return None if no monetary amount is found
@@ -70,8 +68,7 @@ if __name__ == "__main__":
         "targetMarket": "Small businesses in the e-commerce sector",
         "goals": "Achieve 10,000 monthly active users within the first year",
         "productDescription": "A platform that provides e-commerce solutions for small businesses.",
-        "competitiveLandscape": "Competing with Shopify and BigCommerce.",
-        "revenueStreams": "Subscription fees, transaction fees, and premium features."
+        "competitiveLandscape": "Competing with Shopify and BigCommerce."
     }
     available_funds = 50000
     fund_result, fund_amount = check_startup_feasibility(data, available_funds)
