@@ -1,6 +1,7 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
-import Navbar from "./components/NavBar";
+import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import TextGenComponent from "./components/TextGenComponent";
@@ -10,6 +11,9 @@ import FounderDashboard from "./components/FounderDashboard";
 import FounderForm from "./components/founderDashboard/CoFounderMatching";
 import IdeaValidation from "./components/founderDashboard/IdeaValidation";
 import PitchGenerator from "./components/founderDashboard/PitchGenerator";
+import FundFeasibility from "./components/founderDashboard/FundFeasibility";
+import FindInvestors from "./components/FindInvestors";
+import ChatScreen from "./components/ChatScreen"; // Import ChatScreen
 
 export default function App() {
   const { user } = useContext(AuthContext);
@@ -50,6 +54,18 @@ export default function App() {
               <Route 
                   path="/pitch" 
                   element={user?.role === "founder" ? <PitchGenerator /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                  path="/fund-feasibility" 
+                  element={user?.role === "founder" ? <FundFeasibility /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                  path="/find-investors" 
+                  element={user?.role === "founder" ? <FindInvestors /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                  path="/chat/:investorName" 
+                  element={user?.role === "founder" ? <ChatScreen /> : <Navigate to="/login" />} 
               />
               
           </Routes>
