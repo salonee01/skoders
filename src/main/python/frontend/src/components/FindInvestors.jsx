@@ -18,11 +18,18 @@ const investors = [
 const FindInvestors = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [enquiredInvestors, setEnquiredInvestors] = useState([]);
+    const [enquiredInvestors, setEnquiredInvestors] = useState(() => {
+        const saved = localStorage.getItem("enquiredInvestors");
+        return saved ? JSON.parse(saved) : [];
+    });
 
     useEffect(() => {
         if (location.state && location.state.investorName) {
-            setEnquiredInvestors((prev) => [...prev, location.state.investorName]);
+            setEnquiredInvestors((prev) => {
+                const updated = [...prev, location.state.investorName];
+                localStorage.setItem("enquiredInvestors", JSON.stringify(updated));
+                return updated;
+            });
         }
     }, [location.state]);
 
