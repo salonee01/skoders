@@ -12,7 +12,7 @@ import datetime
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from models.pitch_generator import generate_pitch
-# from models.business_plan import generate_business_plan
+from models.business_plan import generate_business_plan
 
 SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"

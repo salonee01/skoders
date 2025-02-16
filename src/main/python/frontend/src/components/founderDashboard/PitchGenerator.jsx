@@ -14,7 +14,7 @@ const PitchGenerator = () => {
         try {
             const response = await axios.post("http://localhost:8000/generate-pitch", { prompt });
             const pitchText = response.data.pitch;
-            const pitchDeck = pitchText.split('\n').filter(paragraph => paragraph.trim() !== ""); // Split pitch into paragraphs
+            const pitchDeck = pitchText.split('**').filter(paragraph => paragraph.trim() !== ""); // Split pitch into paragraphs
             setPitch(pitchDeck);
             setPage(0); // Reset to the first page
 

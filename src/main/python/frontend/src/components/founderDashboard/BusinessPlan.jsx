@@ -79,6 +79,13 @@ const BusinessPlan = () => {
                         <Grid item xs={12}>
                             <Card elevation={4} sx={{ borderRadius: 2 }}>
                                 <CardContent>
+                                    <Typography variant="body1"><strong>Executive Summary:</strong> {businessPlan.executiveSummary}</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={4} sx={{ borderRadius: 2 }}>
+                                <CardContent>
                                     <Typography variant="body1"><strong>Projections:</strong> {businessPlan.projections}</Typography>
                                 </CardContent>
                             </Card>

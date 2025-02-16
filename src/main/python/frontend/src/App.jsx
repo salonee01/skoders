@@ -17,7 +17,6 @@ import ChatScreen from "./components/ChatScreen";
 import FindIdeas from "./components/FindIdeas"; // Import FindIdeas
 import BusinessPlan from "./components/founderDashboard/BusinessPlan";
 import EntrepreneurRoadmap from "./components/founderDashboard/EntrepreneurRoadmap";
-import IdeaValidation from "./components/founderDashboard/IdeaValidation";
 
 export default function App() {
   const { user } = useContext(AuthContext);
