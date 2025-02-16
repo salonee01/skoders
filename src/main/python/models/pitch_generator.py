@@ -1,9 +1,10 @@
 import logging
 from huggingface_hub import InferenceClient
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
-client = InferenceClient(api_key="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")
+client = InferenceClient(api_key=os.environ["hf_token"])
 
 
 def generate_pitch(prompt: str) -> str:

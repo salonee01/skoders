@@ -1,11 +1,12 @@
 import logging
 from huggingface_hub import InferenceClient
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
 client = InferenceClient(
-    provider="hf-inference", api_key="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"
+    provider="hf-inference", api_key=os.environ["hf_token"]
 )
 
 def generate_business_plan(data):

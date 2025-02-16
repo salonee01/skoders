@@ -4,6 +4,7 @@ import { generateUniquenessScore, generateMarketPositivityScore } from "../../ap
 import { TextField, Button, CircularProgress, Typography, Box, Link } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Link as RouterLink } from "react-router-dom";
+import axios from "axios";
 
 const IdeaValidation = () => {
     const { user } = useContext(AuthContext);
@@ -23,7 +24,6 @@ const IdeaValidation = () => {
         setLoading(true);
         try {
             const uniquenessData = await generateUniquenessScore(prompt);
-            setResult(`Uniqueness Score: ${uniquenessData.generated_score}%`);
             setScore(parseFloat(uniquenessData.generated_score));
 
             const marketData = await generateMarketPositivityScore(prompt);
@@ -91,10 +91,6 @@ const IdeaValidation = () => {
                 {loading ? <CircularProgress size={24} color="inherit" /> : "Validate Idea"}
             </Button>
 
-            <Typography variant="body1" sx={{ mt: 2, fontSize: "1.2rem", color: "#222" }}>
-                {loading ? "Generating response..." : result}
-            </Typography>
-
             <Box sx={{ display: "flex", justifyContent: "center", gap: 5, mt: 5, width: "100%" }}>
                 {score !== null && (
                     <Box sx={{ width: "40%", height: "50vh", bgcolor: "white", p: 3, borderRadius: 3, boxShadow: 2 }}>
@@ -148,7 +144,7 @@ const IdeaValidation = () => {
             </Box>
 
             <Box sx={{ mt: 4, textAlign: 'center', mb: 10 }}>
-                <Typography variant="body1" sx={{ fontSize: '1rem', color: '#3f51b5', marginTop: '40px', marginBottom: '40px' }}>
+                <Typography variant="body1" sx={{ fontSize: '1rem', color: '#3f51b5', marginTop: '40px', marginBottom: '140px' }}>
                     Looking for better ideas? <Link component={RouterLink} to="/find-ideas">Click here</Link>
                 </Typography>
             </Box>

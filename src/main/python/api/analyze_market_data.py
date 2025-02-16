@@ -1,13 +1,14 @@
 import praw
 from transformers import pipeline
+import os
 
 # 🔹 Reddit API Credentials
 reddit = praw.Reddit(
-    client_id="3X1F8aFlUfguxneIdadSHA",
-    client_secret="V0o42PK0DcO3LeeifG_TJ0ZiAWHMDA",
-    user_agent="invest_nexus",
-    username="NextStage2655",
-    password="investnexus@123"
+    client_id=os.environ["reddit_clientid"],
+    client_secret=os.environ["reddit_secret"],
+    user_agent=os.environ["reddit_ua"],
+    username=os.environ["reddit_username"],
+    password=os.environ["reddit_password"]
 )
 
 # 🔹 Load Sentiment Analysis Model
