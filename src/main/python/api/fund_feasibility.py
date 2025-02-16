@@ -1,51 +1,39 @@
-import torch
+import logging
+from huggingface_hub import InferenceClient
 import spacy
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-from huggingface_hub import login
 
-# 🔹 Hugging Face Login
-print("Logging in...")
-login("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")  # Add your HF token here
-print("Logged in!")
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
-# 🔹 Free Up GPU Memory Before Running
-torch.cuda.empty_cache()
-torch.cuda.ipc_collect()
-
-# 🔹 Select Model (Use smaller model if memory issues occur)
-MODEL_NAME = "google/gemma-2b"  # Change to "google/gemma-1.1b" if 2B is too large
-
-# 🔹 Load Tokenizer
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-
-# 🔹 Load Model with Automatic Offloading
-print("Loading model...")
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_NAME,
-    device_map="auto",  # Auto-distribute model to GPU, CPU, or disk
-    offload_folder="offload",  # Folder for disk offloading
-    offload_state_dict=True,  # Offload model states to disk if needed
-    torch_dtype="auto"
-)
-print("Model loaded successfully!")
-
-# 🔹 Initialize Text Generation Pipeline
-generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-
-# 🔹 Load SpaCy NLP Model for Named Entity Recognition (NER)
+# Initialize SpaCy model
 nlp = spacy.load("en_core_web_sm")
-print("SpaCy loaded successfully!")
 
-# # 🔹 User Inputs
-# startup_idea = input("Enter your startup idea: ")
-# available_funds = float(input("Enter your available funding amount (in USD): "))
+client = InferenceClient(
+    provider="hf-inference", api_key="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"
+)
 
-def estimate_required_funding(idea_text):
-    """Generate an estimated funding amount for a startup idea."""
-    prompt = f"Estimate the amount of money needed (in USD) for a startup idea: {idea_text}."
+def estimate_required_funding(data):
+    prompt = (
+        f"Estimate the amount of money needed (in USD) for a startup idea with the following details:\n"
+        f"Business Model: {data['businessModel']}\n"
+        f"Target Market: {data['targetMarket']}\n"
+        f"Goals: {data['goals']}\n"
+        f"Product/Service Description: {data['productDescription']}\n"
+        f"Competitive Landscape: {data['competitiveLandscape']}\n"
+        f"Revenue Streams: {data['revenueStreams']}\n"
+    )
     
-    response = generator(prompt, max_length=100, do_sample=True, temperature=0.7)
-    return response[0]["generated_text"]
+    logging.debug(f"Generated prompt: {prompt}")
+
+    response = client.chat.completions.create(
+        model="mistralai/Mistral-Nemo-Instruct-2407",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=100,
+    )
+    estimated_funding_text = response["choices"][0]["message"]["content"]
+    logging.debug(f"Generated funding estimate: {estimated_funding_text}")
+
+    return estimated_funding_text
 
 def extract_funding_amount(text):
     """Extract numerical funding amount using SpaCy NER."""
@@ -58,11 +46,11 @@ def extract_funding_amount(text):
 
     return None  # Return None if no monetary amount is found
 
-def check_startup_feasibility(idea_text, available_funding):
+def check_startup_feasibility(data, available_funding):
     """Check if the startup idea is financially feasible."""
     
     # Step 1: Get estimated funding from AI
-    estimated_funding_text = estimate_required_funding(idea_text)
+    estimated_funding_text = estimate_required_funding(data)
     
     # Step 2: Extract numerical funding amount
     required_funding = extract_funding_amount(estimated_funding_text)
@@ -76,9 +64,16 @@ def check_startup_feasibility(idea_text, available_funding):
     else:
         return "⚠️ Insufficient Funds", required_funding
 
-# # 🔹 Run Feasibility Check
-# fund_result, fund_amount = check_startup_feasibility(startup_idea, available_funds)
-
-# # 🔹 Print Results
-# print("\n🚀 Feasibility Analysis 1:", fund_result)
-# print("\n🚀 Feasibility Analysis 2: Required Amount → $", fund_amount)
+if __name__ == "__main__":
+    data = {
+        "businessModel": "Subscription-based service",
+        "targetMarket": "Small businesses in the e-commerce sector",
+        "goals": "Achieve 10,000 monthly active users within the first year",
+        "productDescription": "A platform that provides e-commerce solutions for small businesses.",
+        "competitiveLandscape": "Competing with Shopify and BigCommerce.",
+        "revenueStreams": "Subscription fees, transaction fees, and premium features."
+    }
+    available_funds = 50000
+    fund_result, fund_amount = check_startup_feasibility(data, available_funds)
+    print("\n🚀 Feasibility Analysis 1:", fund_result)
+    print("\n🚀 Feasibility Analysis 2: Required Amount → $", fund_amount)
