@@ -26,3 +26,12 @@ export async function generateMarketPositivityScore(prompt) {
     });
     return response.json();
 }
+
+export async function generateFundFeaibility(prompt) {
+    const response = await fetch(`${API_URL}/fund-feasibility`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+    });
+    return response.json();
+}

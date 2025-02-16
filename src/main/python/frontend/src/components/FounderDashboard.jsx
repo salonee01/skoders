@@ -9,6 +9,8 @@ import MessageIcon from "@mui/icons-material/Message";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const FounderDashboard = () => {
@@ -47,20 +49,20 @@ const FounderDashboard = () => {
                         {open && <ListItemText primary="Idea Validation" />}
                     </ListItem>
                     <ListItem button component={Link} to="/pitch">
-                        <ListItemIcon><BusinessIcon /></ListItemIcon>
+                        <ListItemIcon><TipsAndUpdatesIcon /></ListItemIcon>
                         {open && <ListItemText primary="Pitch Generation" />}
                     </ListItem>
                     <ListItem button component={Link} to="/cofounder-matching">
                         <ListItemIcon><GroupIcon /></ListItemIcon>
                         {open && <ListItemText primary="Co-Founder Matching" />}
                     </ListItem>
-                    <ListItem button component={Link} to="/legal-compliance">
-                        <ListItemIcon><GavelIcon /></ListItemIcon>
-                        {open && <ListItemText primary="Legal Compliance" />}
+                    <ListItem button component={Link} to="/business-plan">
+                        <ListItemIcon><CorporateFareIcon /></ListItemIcon>
+                        {open && <ListItemText primary="Business Plan" />}
                     </ListItem>
-                    <ListItem button component={Link} to="/investor-messages">
-                        <ListItemIcon><MessageIcon /></ListItemIcon>
-                        {open && <ListItemText primary="Investor Messages" />}
+                    <ListItem button component={Link} to="/fund-feasibility">
+                        <ListItemIcon><ShowChartIcon /></ListItemIcon>
+                        {open && <ListItemText primary="Fund Feasibility" />}
                     </ListItem>
                 </List>
             </Drawer>

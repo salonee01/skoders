@@ -16,7 +16,7 @@ export default function Navbar() {
         <AppBar position="sticky" sx={{ width: "100%" }}>
             <Toolbar>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    AI Tool
+                    VentureSage
                 </Typography>
                 <Box>
                     <Button color="inherit" component={Link} to="/">Home</Button>

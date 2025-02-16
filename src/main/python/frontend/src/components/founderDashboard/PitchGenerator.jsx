@@ -14,9 +14,12 @@ const PitchGenerator = () => {
         try {
             const response = await axios.post("http://localhost:8000/generate-pitch", { prompt });
             const pitchText = response.data.pitch;
-            const pitchDeck = pitchText.split('\n').filter(paragraph => paragraph.trim() !== ""); // Split pitch into paragraphs
+            const pitchDeck = pitchText.split('**').filter(paragraph => paragraph.trim() !== ""); // Split pitch into paragraphs
             setPitch(pitchDeck);
             setPage(0); // Reset to the first page
+
+            // Update the roadmap status to mark the pitch generation step as completed
+            await axios.post("http://localhost:8000/update-roadmap-status", { step: 4, status: "completed", user_id: localStorage.getItem("username") });
         } catch (error) {
             console.error("Error generating pitch:", error);
             setPitch(["Error generating pitch. Please try again."]);
