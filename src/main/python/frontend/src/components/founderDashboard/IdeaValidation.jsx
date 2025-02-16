@@ -40,7 +40,7 @@ const IdeaValidation = () => {
     // Data for Pie Charts
     const pieData = [
         { name: "Uniqueness", value: score || 0 },
-        { name: "", value: 100 - (score || 0) },
+        { name: "Similarity", value: 100 - (score || 0) },
     ];
 
     const marketPieData = [
@@ -48,7 +48,7 @@ const IdeaValidation = () => {
         { name: "Negative", value: marketScores[1] || 0 },
     ];
 
-    const COLORS = ["#3f51b5", "#e0e0e0"];
+    const COLORS = ["#3f51b5", "#b0bec5"]; // Changed color for Similarity
     const MARKET_COLORS = ["#4caf50", "#f44336"];
 
     return (
@@ -100,7 +100,7 @@ const IdeaValidation = () => {
                         <Typography variant="h5" sx={{ textAlign: "center", mb: 2, fontWeight: "bold", color: "#333" }}>
                             Uniqueness Score
                         </Typography>
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" style={{ paddingBottom: '40px' }}>
                             <PieChart>
                                 <Pie
                                     data={pieData}
@@ -108,15 +108,13 @@ const IdeaValidation = () => {
                                     cy="50%"
                                     outerRadius="90%"
                                     dataKey="value"
-                                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
-                                    labelStyle={{ fill: "#222", fontSize: "1rem", fontWeight: "bold" }}
                                 >
                                     {pieData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index]} />
                                     ))}
                                 </Pie>
                                 <Tooltip />
-                                <Legend wrapperStyle={{ color: "#222", fontSize: "1rem" }} />
+                                <Legend wrapperStyle={{ color: "#222", fontSize: "1rem", marginTop: '40px' }} />
                             </PieChart>
                         </ResponsiveContainer>
                     </Box>
@@ -127,7 +125,7 @@ const IdeaValidation = () => {
                         <Typography variant="h5" sx={{ textAlign: "center", mb: 2, fontWeight: "bold", color: "#333" }}>
                             Market Acceptance
                         </Typography>
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" style={{ paddingBottom: '40px' }}>
                             <PieChart>
                                 <Pie
                                     data={marketPieData}
@@ -135,23 +133,21 @@ const IdeaValidation = () => {
                                     cy="50%"
                                     outerRadius="90%"
                                     dataKey="value"
-                                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
-                                    labelStyle={{ fill: "#222", fontSize: "1rem", fontWeight: "bold" }}
                                 >
                                     {marketPieData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={MARKET_COLORS[index]} />
                                     ))}
                                 </Pie>
                                 <Tooltip />
-                                <Legend wrapperStyle={{ color: "#222", fontSize: "1rem" }} />
+                                <Legend wrapperStyle={{ color: "#222", fontSize: "1rem", marginTop: '40px' }} />
                             </PieChart>
                         </ResponsiveContainer>
                     </Box>
                 )}
             </Box>
 
-            <Box sx={{ mt: 4, textAlign: 'center' }}>
-                <Typography variant="body1" sx={{ fontSize: '1rem', color: '#3f51b5' }}>
+            <Box sx={{ mt: 4, textAlign: 'center', mb: 10 }}>
+                <Typography variant="body1" sx={{ fontSize: '1rem', color: '#3f51b5', marginTop: '40px', marginBottom: '40px' }}>
                     Looking for better ideas? <Link component={RouterLink} to="/find-ideas">Click here</Link>
                 </Typography>
             </Box>
