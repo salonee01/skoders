@@ -3,7 +3,7 @@ from huggingface_hub import InferenceClient
 import os
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 client = InferenceClient(api_key=os.environ["hf_token"])
 
 

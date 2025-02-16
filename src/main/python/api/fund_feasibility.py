@@ -3,7 +3,7 @@ from huggingface_hub import InferenceClient
 import spacy
 import os
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # Initialize SpaCy model
 nlp = spacy.load("en_core_web_sm")

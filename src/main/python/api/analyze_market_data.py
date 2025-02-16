@@ -43,7 +43,7 @@ def analyze_market_demand(topic):
         
         sentiments = []
         for comment in post["comments"]:
-            sentiment = sentiment_analyzer(comment)[0]
+            sentiment = sentiment_analyzer(comment,max_length=500)[0]
             sentiments.append(sentiment)
             print(f"  💬 {comment} -> {sentiment['label']} ({sentiment['score']:.2f})")
         
