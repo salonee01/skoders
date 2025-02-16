@@ -28,6 +28,7 @@ const IdeaValidation = () => {
 
             const marketData = await generateMarketPositivityScore(prompt);
             setMarketScores(marketData.generated_score);
+            await axios.post("http://127.0.0.1:8000/update-roadmap-status", { step: 0, status: "completed", user_id: user.username });
         } catch (error) {
             console.error("Error generating text:", error);
             setResult("Error generating text. Please try again.");
