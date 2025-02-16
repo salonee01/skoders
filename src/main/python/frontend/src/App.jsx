@@ -9,6 +9,9 @@ import { AuthContext } from "./components/AuthContext";
 import FounderDashboard from "./components/FounderDashboard";
 import FounderForm from "./components/founderDashboard/CoFounderMatching";
 import PitchGenerator from "./components/founderDashboard/PitchGenerator";
+import BusinessPlan from "./components/founderDashboard/BusinessPlan";
+import EntrepreneurRoadmap from "./components/founderDashboard/EntrepreneurRoadmap";
+import IdeaValidation from "./components/founderDashboard/IdeaValidation";
 
 export default function App() {
   const { user } = useContext(AuthContext);
@@ -42,10 +45,24 @@ export default function App() {
                   path="/investor-dashboard" 
                   element={user?.role === "investor" ? <InvestorDashboard /> : <Navigate to="/login" />} 
               />
+                <Route 
+                    path="/idea-validation" 
+                    element={user?.role === "founder" ? <IdeaValidation /> : <Navigate to="/login" />}
+                />
               <Route 
                   path="/pitch" 
                   element={user?.role === "founder" ? <PitchGenerator /> : <Navigate to="/login" />} 
               />
+               <Route 
+                  path="/business-plan" 
+                  element={user?.role === "founder" ? <BusinessPlan /> : <Navigate to="/login" />} 
+              />
+
+<Route 
+                  path="/profile" 
+                  element={user?.role === "founder" ? <EntrepreneurRoadmap /> : <Navigate to="/login" />} 
+              />
+
               
           </Routes>
       </Router>

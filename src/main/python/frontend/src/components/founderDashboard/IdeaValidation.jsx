@@ -5,6 +5,7 @@ import axios from "axios";
 const IdeaValidation = () => {
     const [idea, setIdea] = useState("");
     const [message, setMessage] = useState({ type: "", text: "" });
+    const userId = "user123"; // Replace with actual user ID
 
     const handleIdeaSubmit = async () => {
         if (!idea.trim()) {
@@ -17,6 +18,8 @@ const IdeaValidation = () => {
 
             if (response.data.valid) {
                 setMessage({ type: "success", text: "Your idea has potential!" });
+                // Update the roadmap status to mark the idea validation step as completed
+                await axios.post("http://127.0.0.1:8000/update-roadmap-status", { step: 0, status: "completed", user_id: userId });
             } else {
                 setMessage({ type: "error", text: "Your idea needs improvement." });
             }

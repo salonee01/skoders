@@ -54,13 +54,9 @@ const FounderDashboard = () => {
                         <ListItemIcon><GroupIcon /></ListItemIcon>
                         {open && <ListItemText primary="Co-Founder Matching" />}
                     </ListItem>
-                    <ListItem button component={Link} to="/legal-compliance">
-                        <ListItemIcon><GavelIcon /></ListItemIcon>
-                        {open && <ListItemText primary="Legal Compliance" />}
-                    </ListItem>
-                    <ListItem button component={Link} to="/investor-messages">
-                        <ListItemIcon><MessageIcon /></ListItemIcon>
-                        {open && <ListItemText primary="Investor Messages" />}
+                    <ListItem button component={Link} to="/business-plan">
+                        <ListItemIcon><GroupIcon /></ListItemIcon>
+                        {open && <ListItemText primary="Business Plan" />}
                     </ListItem>
                 </List>
             </Drawer>

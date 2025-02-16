@@ -12,12 +12,13 @@ import datetime
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from models.pitch_generator import generate_pitch
+# from models.business_plan import generate_business_plan
 
 SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
 
 # MongoDB Setup
-client = MongoClient("mongodb+srv://saloneevelonde:FczHrpkg8u6qOeMv@cluster0.z6ubj.mongodb.net/")
+client = MongoClient("mongodb://localhost:27017/")
 db = client["invest_nexus"]
 users_collection = db["users"]
 
@@ -177,5 +178,55 @@ async def generate_pitch_api(request: PitchRequest):
     try:
         pitch = generate_pitch(request.prompt)
         return {"pitch": pitch}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+class BusinessPlanData(BaseModel):
+    businessModel: str
+    targetMarket: str
+    goals: str
+
+@router.post("/generate-business-plan")
+async def generate_business_plan_api(data: BusinessPlanData):
+    try:
+        plan = generate_business_plan(data.dict())
+        return plan
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+client = MongoClient("mongodb://localhost:27017/")
+db = client["invest_nexus"]
+roadmap_collection = db["roadmap_status"]
+
+class RoadmapStatus(BaseModel):
+    step: int
+    status: str
+    user_id: str
+
+roadmap_collection = db["roadmap_status"]
+
+@router.get("/get-roadmap-status")
+async def get_roadmap_status(user_id: str):
+    try:
+        status = roadmap_collection.find_one({"user_id": user_id})
+        if status:
+            return status["steps"]
+        else:
+            return {}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/update-roadmap-status")
+async def update_roadmap_status(status: RoadmapStatus):
+    try:
+        existing_status = roadmap_collection.find_one({"user_id": status.user_id})
+        if existing_status:
+            roadmap_collection.update_one(
+                {"user_id": status.user_id},
+                {"$set": {f"steps.{status.step}": status.status}}
+            )
+        else:
+            roadmap_collection.insert_one({"user_id": status.user_id, "steps": {str(status.step): status.status}})
+        return {"message": "Roadmap status updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
