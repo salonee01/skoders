@@ -18,7 +18,8 @@ SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
 
 # MongoDB Setup
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://localhost:27017")
+#client = MongoClient("mongodb+srv://saloneevelonde:FczHrpkg8u6qOeMv@cluster0.z6ubj.mongodb.net/", tls=True, tlsAllowInvalidCertificates=True, ssl_cert_reqs=ssl.CERT_NONE)
 db = client["invest_nexus"]
 users_collection = db["users"]
 

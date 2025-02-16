@@ -58,6 +58,10 @@ const FounderDashboard = () => {
                         <ListItemIcon><GroupIcon /></ListItemIcon>
                         {open && <ListItemText primary="Business Plan" />}
                     </ListItem>
+                    <ListItem button component={Link} to="/fund-feasibility">
+                        <ListItemIcon><ShowChartIcon /></ListItemIcon>
+                        {open && <ListItemText primary="Fund Feasibility" />}
+                    </ListItem>
                 </List>
             </Drawer>
 

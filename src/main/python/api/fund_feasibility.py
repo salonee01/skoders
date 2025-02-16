@@ -1,45 +1,70 @@
-from transformers import pipeline
+import torch
 import spacy
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from huggingface_hub import login
 
-# add hugging face access token here
-print("Logging in")
-login("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")
-# Load Hugging Face model for text generation
-generator = pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.3")
-print("Logged in")
-# Load SpaCy NLP model for Named Entity Recognition (NER)
+# 🔹 Hugging Face Login
+print("Logging in...")
+login("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")  # Add your HF token here
+print("Logged in!")
+
+# 🔹 Free Up GPU Memory Before Running
+torch.cuda.empty_cache()
+torch.cuda.ipc_collect()
+
+# 🔹 Select Model (Use smaller model if memory issues occur)
+MODEL_NAME = "google/gemma-2b"  # Change to "google/gemma-1.1b" if 2B is too large
+
+# 🔹 Load Tokenizer
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+# 🔹 Load Model with Automatic Offloading
+print("Loading model...")
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    device_map="auto",  # Auto-distribute model to GPU, CPU, or disk
+    offload_folder="offload",  # Folder for disk offloading
+    offload_state_dict=True,  # Offload model states to disk if needed
+    torch_dtype="auto"
+)
+print("Model loaded successfully!")
+
+# 🔹 Initialize Text Generation Pipeline
+generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+
+# 🔹 Load SpaCy NLP Model for Named Entity Recognition (NER)
 nlp = spacy.load("en_core_web_sm")
-print("Spacy loaded")
-startup_idea = input("Enter your startup idea: ")
-available_funds = float(input("Enter your available funding amount (in USD): "))
+print("SpaCy loaded successfully!")
+
+# # 🔹 User Inputs
+# startup_idea = input("Enter your startup idea: ")
+# available_funds = float(input("Enter your available funding amount (in USD): "))
 
 def estimate_required_funding(idea_text):
-    """Use Hugging Face model to estimate startup funding"""
-    prompt = f"How much amount in dollars would we need for a startup idea of {idea_text}."
+    """Generate an estimated funding amount for a startup idea."""
+    prompt = f"Estimate the amount of money needed (in USD) for a startup idea: {idea_text}."
     
     response = generator(prompt, max_length=100, do_sample=True, temperature=0.7)
-    estimated_funding_text = response[0]["generated_text"]
-
-    return estimated_funding_text
+    return response[0]["generated_text"]
 
 def extract_funding_amount(text):
-    """Extract funding amount using SpaCy NER"""
+    """Extract numerical funding amount using SpaCy NER."""
     doc = nlp(text)
     
     for ent in doc.ents:
         if ent.label_ == "MONEY":  # Look for monetary entities
-            return float("".join(filter(str.isdigit, ent.text)))  # Convert to number
-    
-    return None  # No funding amount found
+            amount = "".join(filter(str.isdigit, ent.text))  # Extract only numbers
+            return float(amount) if amount else None
+
+    return None  # Return None if no monetary amount is found
 
 def check_startup_feasibility(idea_text, available_funding):
-    """Check startup feasibility and suggest additional funds if needed"""
+    """Check if the startup idea is financially feasible."""
     
-    # Step 1: Get estimated required funding using AI
+    # Step 1: Get estimated funding from AI
     estimated_funding_text = estimate_required_funding(idea_text)
     
-    # Step 2: Extract numerical funding amount using SpaCy
+    # Step 2: Extract numerical funding amount
     required_funding = extract_funding_amount(estimated_funding_text)
     
     if required_funding is None:
@@ -47,12 +72,13 @@ def check_startup_feasibility(idea_text, available_funding):
     
     # Step 3: Compare with available funds
     if available_funding >= required_funding:
-        return "Proper Funds",available_funding
+        return "✅ Sufficient Funds", available_funding
     else:
-        #additional_needed = required_funding - available_funding
-        return "Less Funds",required_funding
+        return "⚠️ Insufficient Funds", required_funding
 
+# # 🔹 Run Feasibility Check
+# fund_result, fund_amount = check_startup_feasibility(startup_idea, available_funds)
 
-fund_result,fund_amount = check_startup_feasibility(startup_idea, available_funds)
-print("\n🚀 Feasibility Analysis 1:", fund_result)
-print("\n🚀 Feasibility Analysis 2:", fund_amount)
+# # 🔹 Print Results
+# print("\n🚀 Feasibility Analysis 1:", fund_result)
+# print("\n🚀 Feasibility Analysis 2: Required Amount → $", fund_amount)
