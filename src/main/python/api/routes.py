@@ -13,6 +13,7 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from models.pitch_generator import generate_pitch
 from models.business_plan import generate_business_plan
+from api.fund_feasibility import check_startup_feasibility
 
 SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"
@@ -231,3 +232,15 @@ async def update_roadmap_status(status: RoadmapStatus):
         return {"message": "Roadmap status updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/fund-feasibility")
+async def generate_fund_feasibility(prompt: dict):
+    prompt_dict = {
+    "businessModel": prompt["businessModel"],
+    "targetMarket": prompt["targetMarket"],
+    "goals": prompt["goals"],
+    "productDescription": prompt["productDescription"],
+    "competitiveLandscape": prompt["competitiveLandscape"]
+}
+
+    return {"generated_score": check_startup_feasibility(prompt_dict,prompt['targetMarket'],prompt['goals'],prompt['productDescription'],prompt['competitiveLandscape'],prompt['funds'])}
