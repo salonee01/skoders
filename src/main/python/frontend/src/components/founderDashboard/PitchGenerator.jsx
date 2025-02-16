@@ -14,7 +14,8 @@ const PitchGenerator = () => {
         try {
             const response = await axios.post("http://localhost:8000/generate-pitch", { prompt });
             const pitchText = response.data.pitch;
-            const pitchDeck = pitchText.split('**').filter(paragraph => paragraph.trim() !== ""); // Split pitch into paragraphs
+            console.log("Pitch text:", pitchText);
+            const pitchDeck = pitchText.split(/(?=\*\*\d+\.\s)/).filter(paragraph => paragraph.trim() !== ""); // Split pitch into paragraphs
             setPitch(pitchDeck);
             setPage(0); // Reset to the first page
 
@@ -74,7 +75,7 @@ const PitchGenerator = () => {
                         <Grid item xs={12} sm={10} md={8}>
                             <Card elevation={4} sx={{ borderRadius: 2, backgroundColor: '#ffffff' }}>
                                 <CardContent>
-                                    <Typography variant="body1" sx={{ fontSize: '1.2rem', color: '#333' }}>
+                                    <Typography variant="body1" sx={{ fontSize: '1.2rem', color: '#333', whiteSpace: 'pre-line' }}>
                                         {pitch[page]}
                                     </Typography>
                                 </CardContent>

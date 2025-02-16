@@ -9,7 +9,7 @@ const Home = () => {
     return (
         <Container maxWidth="lg" sx={{ mt: 4 }}>
             <Typography variant="h3" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                Welcome to Invest Nexus
+                Welcome to VectureSage
             </Typography>
             <Typography variant="h6" gutterBottom sx={{ color: 'text.secondary' }}>
                 Your one-stop platform for startup success. Validate your ideas, find co-founders, secure funding, and create compelling business plans and pitches.
@@ -20,7 +20,7 @@ const Home = () => {
                         Empowering Entrepreneurs and Investors
                     </Typography>
                     <Typography variant="body1" gutterBottom sx={{ color: 'text.secondary' }}>
-                        Invest Nexus is dedicated to helping entrepreneurs turn their ideas into successful startups and providing investors with opportunities to support innovative ventures. Join us to explore a world of possibilities.
+                        VectureSage is dedicated to helping entrepreneurs turn their ideas into successful startups and providing investors with opportunities to support innovative ventures. Join us to explore a world of possibilities.
                     </Typography>
                     <Grid container spacing={4}>
                         <Grid item xs={12} sm={6} md={4}>

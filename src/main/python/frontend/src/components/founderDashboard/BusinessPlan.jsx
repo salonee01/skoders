@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Typography, Box, TextField, Button, CircularProgress, Card, CardContent, Grid } from "@mui/material";
+import { Container, Typography, Box, TextField, Button, CircularProgress, Card, CardContent, Pagination } from "@mui/material";
 import axios from "axios";
 
 const BusinessPlan = () => {
@@ -10,6 +10,8 @@ const BusinessPlan = () => {
     });
     const [loading, setLoading] = useState(false);
     const [businessPlan, setBusinessPlan] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const cardsPerPage = 3;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +27,35 @@ const BusinessPlan = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const renderBusinessPlan = (text) => {
+        const sections = text.split(/\*\*\d+\.\s/).filter(section => section.trim() !== "");
+        const indexOfLastCard = currentPage * cardsPerPage;
+        const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+        const currentCards = sections.slice(indexOfFirstCard, indexOfLastCard);
+
+        return currentCards.map((section, index) => {
+            const [heading, ...content] = section.split("\n");
+            return (
+                <Box key={index} sx={{ mt: 4 }}>
+                    <Card elevation={4} sx={{ borderRadius: 2 }}>
+                        <CardContent>
+                            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                                {heading.replace("**", "").replace("**", "")}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom sx={{ color: 'text.secondary', whiteSpace: 'pre-line' }}>
+                                {content.join("\n")}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+            );
+        });
+    };
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
     };
 
     return (
@@ -72,39 +103,13 @@ const BusinessPlan = () => {
             </Box>
             {businessPlan && (
                 <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                        Business Plan
-                    </Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Card elevation={4} sx={{ borderRadius: 2 }}>
-                                <CardContent>
-                                    <Typography variant="body1"><strong>Executive Summary:</strong> {businessPlan.executiveSummary}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={4} sx={{ borderRadius: 2 }}>
-                                <CardContent>
-                                    <Typography variant="body1"><strong>Projections:</strong> {businessPlan.projections}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={4} sx={{ borderRadius: 2 }}>
-                                <CardContent>
-                                    <Typography variant="body1"><strong>Key Metrics:</strong> {businessPlan.keyMetrics}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={4} sx={{ borderRadius: 2 }}>
-                                <CardContent>
-                                    <Typography variant="body1"><strong>Strategies:</strong> {businessPlan.strategies}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    </Grid>
+                    {renderBusinessPlan(businessPlan)}
+                    <Pagination
+                        count={Math.ceil(businessPlan.split(/\*\*\d+\.\s/).filter(section => section.trim() !== "").length / cardsPerPage)}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        sx={{ mt: 4 }}
+                    />
                 </Box>
             )}
         </Container>
