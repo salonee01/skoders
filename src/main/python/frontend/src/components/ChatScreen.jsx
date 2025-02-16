@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Box, TextField, Button, Paper } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const ChatScreen = () => {
     const { investorName } = useParams();
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Set the hardcoded message when the component mounts
@@ -14,7 +15,8 @@ const ChatScreen = () => {
     const handleSendMessage = () => {
         // Handle sending the message (e.g., API call or state update)
         console.log("Message sent:", message);
-        alert("Message sent successfully");
+        // Navigate back to the FindInvestors page and pass the investor name
+        navigate(`/find-investors`, { state: { investorName } });
     };
 
     return (
