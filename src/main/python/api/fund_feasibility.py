@@ -1,7 +1,7 @@
 import logging
 from huggingface_hub import InferenceClient
 import spacy
-
+import os
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 nlp = spacy.load("en_core_web_sm")
 
 client = InferenceClient(
-    provider="hf-inference", api_key="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"
+    provider="hf-inference", api_key=os.environ["hf_token"]
 )
 
 def estimate_required_funding(data):
