@@ -1,8 +1,9 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../AuthContext";
 import { generateUniquenessScore, generateMarketPositivityScore } from "../../api";
-import { TextField, Button, CircularProgress, Typography, Box } from "@mui/material";
+import { TextField, Button, CircularProgress, Typography, Box, Link } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { Link as RouterLink } from "react-router-dom";
 
 const IdeaValidation = () => {
     const { user } = useContext(AuthContext);
@@ -147,6 +148,12 @@ const IdeaValidation = () => {
                         </ResponsiveContainer>
                     </Box>
                 )}
+            </Box>
+
+            <Box sx={{ mt: 4, textAlign: 'center' }}>
+                <Typography variant="body1" sx={{ fontSize: '1rem', color: '#3f51b5' }}>
+                    Looking for better ideas? <Link component={RouterLink} to="/find-ideas">Click here</Link>
+                </Typography>
             </Box>
         </Box>
     );

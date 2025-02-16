@@ -13,7 +13,8 @@ import IdeaValidation from "./components/founderDashboard/IdeaValidation";
 import PitchGenerator from "./components/founderDashboard/PitchGenerator";
 import FundFeasibility from "./components/founderDashboard/FundFeasibility";
 import FindInvestors from "./components/FindInvestors";
-import ChatScreen from "./components/ChatScreen"; // Import ChatScreen
+import ChatScreen from "./components/ChatScreen";
+import FindIdeas from "./components/FindIdeas"; // Import FindIdeas
 
 export default function App() {
   const { user } = useContext(AuthContext);
@@ -66,6 +67,10 @@ export default function App() {
               <Route 
                   path="/chat/:investorName" 
                   element={user?.role === "founder" ? <ChatScreen /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                  path="/find-ideas" 
+                  element={user?.role === "founder" ? <FindIdeas /> : <Navigate to="/login" />} 
               />
               
           </Routes>
